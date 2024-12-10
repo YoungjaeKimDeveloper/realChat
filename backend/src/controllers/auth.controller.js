@@ -1,11 +1,13 @@
+import { generateToken } from "../lib/utils.js";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
   try {
+    console.log(req.body);
     const userData = req.body;
     const { email, fullName, password } = userData;
-    //
+
     if (password.length < 6) {
       return res.status(400).json({
         success: false,
@@ -29,17 +31,23 @@ export const signup = async (req, res) => {
       password: hashPassword,
     });
     if (newUser) {
-      return res
-        .status(201)
-        .json({ success: true, message: "Created New User", newUser: newUser });
+      // generate jwt token
+      generateToken(newUser._id, res);
+      await newUser.save();
+      return res.status(201).json({
+        _id: newUser.id,
+        fullName: newUser.fullName,
+        password: newUser.password,
+        profilePic: newUser.profilePic,
+      });
     } else {
       return res.json(400).json({ success: false, message: "INVALID USER" });
     }
   } catch (error) {
-    console.error("Error in creating User❗️");
+    console.error("Error in creating User❗️", error.message);
     return res.status(500).json({
       success: false,
-      message: "Fail in creating new User" + error.message,
+      message: "Internal ERROR IN CREATING NEW USERr" + error.message,
     });
   }
 };
