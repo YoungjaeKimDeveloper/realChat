@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
   try {
-    console.log(req.body);
     const userData = req.body;
     const { email, fullName, password } = userData;
 
@@ -52,10 +51,41 @@ export const signup = async (req, res) => {
   }
 };
 
-export const login = (req, res) => {
-  return res.send({ message: "Signup Route" });
+export const login = async (req, res) => {
+  // 사용자가 input에 넣은값을 먼저 받아오기
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(400).json({ success: false, message: "Invalid User" });
+    }
+    // 뒤에 나온게 Hashpasswoed(DB에 저장되어있는거)
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Password doesn't match" });
+    }
+    generateToken(user._id, res);
+    return res.status(200).json({
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      profilePic: user.profilePic,
+    });
+  } catch (error) {
+    console.error("FAILED TO LOGIN");
+    return res.status(500).json({ success: false, message: error.message });
+  }
 };
 
 export const logout = (req, res) => {
-  return res.send({ message: "Signup Route" });
+  try {
+    // Cookie 지워주기
+    res.cookie("jwt", "", { maxAge: 0 });
+    return res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.log("ERROR IN LOGGOUT Controller", error.message);
+    return res.status(500).json({ message: "Internal ERROR" });
+  }
 };
