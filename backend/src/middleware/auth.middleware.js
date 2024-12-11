@@ -29,7 +29,7 @@ export const protectRoute = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.log("ERROR IN ProtectRoute middlewares: ", error.mssage);
+    console.log("ERROR IN ProtectRoute middlewares: ", error.message);
     return res.status(500).json({ success: false, message: "SERVER ERROR" });
   }
 };

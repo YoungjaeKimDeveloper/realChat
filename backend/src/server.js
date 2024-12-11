@@ -7,11 +7,12 @@ import cookieParser from "cookie-parser";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
-
-// AuthRoutes
 app.use(express.json());
-app.use("/api/auth", authRoutes);
 app.use(cookieParser());
+// AuthRoutes
+
+app.use("/api/auth", authRoutes);
+// 쿠키파싱해주기
 
 app.listen(PORT, () => {
   connectDB();

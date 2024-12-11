@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
 export const signup = async (req, res) => {
   try {
+    // 클라이언트에서 서버로 보내줌 req
     const userData = req.body;
     const { email, fullName, password } = userData;
 
@@ -33,10 +34,10 @@ export const signup = async (req, res) => {
       // generate jwt token
       generateToken(newUser._id, res);
       await newUser.save();
-      return res.status(201).json({
-        _id: newUser.id,
+      res.status(201).json({
+        _id: newUser._id,
         fullName: newUser.fullName,
-        password: newUser.password,
+        email: newUser.email,
         profilePic: newUser.profilePic,
       });
     } else {
@@ -110,5 +111,15 @@ export const updateProfile = async (req, res) => {
     res
       .status(500)
       .json({ message: "INTERNAL ERROR IN UPDATING PROFILE" + error.message });
+  }
+};
+
+export const checkAuth = (req, res) => {
+  try {
+    // 서버에 저장되어있는는 User의 정보를 보여주면됨
+    return res.status(200).json(req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller.", error.message);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
