@@ -1,7 +1,7 @@
 import { generateToken } from "../lib/utils.js";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
-
+import cloudinary from "../lib/cloudinary.js";
 export const signup = async (req, res) => {
   try {
     const userData = req.body;
@@ -87,5 +87,28 @@ export const logout = (req, res) => {
   } catch (error) {
     console.log("ERROR IN LOGGOUT Controller", error.message);
     return res.status(500).json({ message: "Internal ERROR" });
+  }
+};
+// When user wants to update the image
+export const updateProfile = async (req, res) => {
+  try {
+    const { profilePic } = req.body;
+    const userId = req.user._id;
+    if (!profilePic) {
+      return res.status(400).json({ message: "Profile pic is required" });
+    }
+    // we need to update the picure in database
+    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+    const updateUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: uploadResponse.secure_url },
+      { new: true }
+    );
+    res.status(200).json(updateUser);
+  } catch (error) {
+    console.log("ERROR in update profile", error.message);
+    res
+      .status(500)
+      .json({ message: "INTERNAL ERROR IN UPDATING PROFILE" + error.message });
   }
 };

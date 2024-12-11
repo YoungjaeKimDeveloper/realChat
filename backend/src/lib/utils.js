@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
-
+// Token generater with user id
+// So I have to decoded with userID
 export const generateToken = async (userId, res) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: "7d",
