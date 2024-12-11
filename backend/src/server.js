@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.route.js";
+import messagesRoutes from "./routes/message.route.js";
 import connectDB from "./lib/db.js";
 import cookieParser from "cookie-parser";
 
@@ -12,6 +13,7 @@ app.use(cookieParser());
 // AuthRoutes
 
 app.use("/api/auth", authRoutes);
+app.use("/api/message", messagesRoutes);
 // 쿠키파싱해주기
 
 app.listen(PORT, () => {

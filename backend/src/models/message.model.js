@@ -19,6 +19,7 @@ const messageSchema = new mongoose.Schema(
       type: String,
     },
   },
+  // 시간 표시해주기
   { timestamps: true }
 );
 
