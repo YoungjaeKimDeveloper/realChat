@@ -8,7 +8,7 @@ export const signup = async (req, res) => {
     const userData = req.body;
     const { email, fullName, password } = userData;
 
-    if (password.length < 6) {
+    if (password?.length < 6) {
       return res.status(400).json({
         success: false,
         message: "The password must be over 6 letters",
@@ -35,10 +35,7 @@ export const signup = async (req, res) => {
       generateToken(newUser._id, res);
       await newUser.save();
       res.status(201).json({
-        _id: newUser._id,
-        fullName: newUser.fullName,
-        email: newUser.email,
-        profilePic: newUser.profilePic,
+        newUser,
       });
     } else {
       return res.json(400).json({ success: false, message: "INVALID USER" });

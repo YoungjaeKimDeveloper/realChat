@@ -19,6 +19,7 @@ export const protectRoute = async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized- Invalid Token" });
     }
     // 클라이언트에는 password 숨겨서 보내기
+    // Decode해서 실제 User 찾아주기
     const user = await User.findById(decoded.userId).select("-password");
     if (!user) {
       return res

@@ -11,6 +11,7 @@ const app = express();
 const PORT = process.env.PORT;
 app.use(express.json());
 app.use(cookieParser());
+// 프론트엔드에서 신호 받을수있게
 app.use(
   cors({
     origin: "http://localhost:5174",

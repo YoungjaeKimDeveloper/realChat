@@ -5,10 +5,11 @@ import LoginPage from "./Pages/LoginPage";
 import ProfilePage from "./Pages/ProfilePage";
 import SettingsPage from "./Pages/SettingsPage";
 import SignUpPage from "./Pages/SignUpPage";
-import { axiosInstance } from "./lib/axios";
+
 import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
+import { CircleSlash2 } from "lucide-react";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -25,6 +26,14 @@ const App = () => {
       </div>
     );
   }
+  // if (!isCheckingAuth && !isCheckingAuth) {
+  //   return (
+  //     <div className="flex h-screen flex-col items-center justify-center gap-y-4">
+  //       <h1>Can't find User</h1>
+  //       <CircleSlash2 className="size-10" />
+  //     </div>
+  //   );
+  // }
   return (
     <>
       <Navbar />
@@ -33,16 +42,24 @@ const App = () => {
           path="/"
           element={authUser ? <Homepage /> : <Navigate to="/login" />}
         />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/signup"
+          element={authUser ? <Navigate to="/" /> : <SignUpPage />}
+        />
+        <Route
+          path="/login"
+          element={authUser ? <Navigate to="/" /> : <LoginPage />}
+        />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route
+          path="/profile"
+          element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
       </Routes>
     </>
   );
 };
 
 export default App;
-
 
 // 1:51:31

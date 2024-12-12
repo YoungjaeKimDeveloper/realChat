@@ -6,6 +6,7 @@ export const getUsersForSidebar = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
     console.log(loggedInUserId);
+    // 실제로 User정보 가져올때는 항목 빼서 갖다주기
     const filteredUsers = await User.find({
       _id: { $ne: loggedInUserId },
     }).select("-password");
