@@ -14,7 +14,7 @@ app.use(cookieParser());
 // 프론트엔드에서 신호 받을수있게
 app.use(
   cors({
-    origin: "http://localhost:5174",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
