@@ -1,15 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Camera, User, Mail } from "lucide-react";
 import avatar from "../../public/avartar.png";
 const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
+  const [setselectedImg, setSetselectedImg] = useState(null);
 
   const handleImageUpload = async (e) => {
-    e.preventDefault();
     const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    // File load는 파일 읽기가 완료되면 사용할수있게된다.
+    reader.onload = async () => {
+      const base64Image = reader.result;
+      setSetselectedImg(base64Image);
+      // Authstore를 통해 백엔드에 저장할수있도록 해줘야함
+      await updateProfile({ profilePic: base64Image });
+    };
     console.log({ file: file });
   };
+
   return (
     <div className="h-screen pt-20">
       <div className="mx-auto max-w-2xl p-4 py-8">
@@ -22,7 +33,7 @@ const ProfilePage = () => {
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <img
-                src={authUser.profilePic || avatar}
+                src={setselectedImg || authUser.profilePic || avatar}
                 alt="Profile"
                 className="size-32 rounded-full border-4 object-cover"
               />
