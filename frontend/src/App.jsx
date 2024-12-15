@@ -10,12 +10,15 @@ import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
-import { CircleSlash2 } from "lucide-react";
+import { useThemeStore } from "./store/useThemeStore.js";
+// import { CircleSlash2 } from "lucide-react";
 
 const App = () => {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
+  const { theme } = useThemeStore();
   useEffect(() => {
     console.log("Check Auth");
+    console.log(theme);
     checkAuth();
   }, [checkAuth]);
   // 아직 로딩중이고 사용자를 찾지못했을때
@@ -35,7 +38,7 @@ const App = () => {
   //   );
   // }
   return (
-    <>
+    <div data-theme={theme}>
       <Navbar />
       <Routes>
         <Route
@@ -57,7 +60,7 @@ const App = () => {
         />
       </Routes>
       <Toaster />
-    </>
+    </div>
   );
 };
 
