@@ -13,14 +13,17 @@ const Homepage = () => {
     checkAuth();
     getUsers();
   }, [checkAuth, getUsers]);
-  console.info(users);
+  // console.info(users);
 
   return (
     <div className="h-screen bg-base-200">
-      <div className="flex items-center justify-center px-4 pt-20">
-        <div className="h-[calc(100vh-8rem)] w-full max-w-6xl rounded-lg bg-base-100 shadow-lg">
-          <div className="flex h-full overflow-hidden rounded-lg">
-            <Sidebar />
+      <div className="flex h-2 items-center justify-center px-4 pt-20">
+        <div className="mt-40 h-[100px] w-full max-w-6xl rounded-lg bg-base-100 shadow-lg">
+          <div className="flex h-[800px] overflow-hidden rounded-lg">
+            <div className="h-[800px] w-[50%] overflow-scroll">
+              <Sidebar />
+            </div>
+
             {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
           </div>
         </div>

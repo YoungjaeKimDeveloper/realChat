@@ -26,7 +26,7 @@ const Sidebar = () => {
           <span className="hidden font-medium lg:block">Contacts</span>
         </div>
         {/* TODO: Online filter toggle */}
-        <div className="w-full overflow-scroll overflow-y-auto py-3">
+        <div className="w-full overflow-scroll py-3">
           {filteredUsers?.map((user) => (
             <button
               key={user._id}

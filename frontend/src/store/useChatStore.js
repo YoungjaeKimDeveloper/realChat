@@ -20,7 +20,7 @@ export const useChatStore = create((set, get) => ({
       set({ isUsersLoading: true });
       set({ users: res.data });
     } catch (error) {
-      console.error("Failed to fetch Users info", error.message);
+      console.error("Failed to fetch Users info", error.response.data.message);
       toast.error("Failed in fetching Users");
       set({ users: null });
       set({ isUsersLoading: false });
@@ -28,30 +28,41 @@ export const useChatStore = create((set, get) => ({
       set({ isUsersLoading: false });
     }
   },
+  // ERROR
   getMessages: async (userID) => {
     set({ isMessagesLoading: true });
     try {
-      const res = axiosInstance.get(`/message/:${userID}`);
-      set({ messages: res.data.messages });
+      const res = await axiosInstance.get(`/message/${userID}`);
+      set({ messages: res.data });
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response.data.message);
       set({ isMessagesLoading: false });
     } finally {
       set({ isMessagesLoading: false });
     }
   },
   sendMessage: async (messageData) => {
-    console.log(messageData);
-    // const { selectedUser, messages } = get();
-    // try {
-    //   const res = await axiosInstance.post(
-    //     `/messages/send/${selectedUser._id}`,
-    //     messageData,
-    //   );
-    //   set({ message: [...messages, res.data] });
-    // } catch (error) {
-    //   toast.error(`ERROR IN SENDING MESSAGES${error.response.data.message}`);
-    // }
+    // console.log(messages);
+    // set({ messages: [] });
+    const { selectedUser, messages } = get();
+    // console.log("====================");
+    // console.log(selectedUser);
+    // console.log(messages);
+    try {
+      const res = await axiosInstance.post(
+        `/message/send/${selectedUser._id}`,
+        messageData,
+      );
+      console.log(res.data);
+      set((state) => ({ messages: [...state.messages, res.data] }));
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "An unknown error occurred";
+
+      toast.error(`ERROR IN SENDING MESSAGE: ${errorMessage}`);
+    }
   },
   // todo : optimize this funciton later
   setSelectedUser: (selectedUser) => {

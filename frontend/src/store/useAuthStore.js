@@ -35,7 +35,10 @@ export const useAuthStore = create((set) => ({
         set({ authUser: res.data.newUser });
       }
     } catch (error) {
-      console.error("FAILED TO CREATED NEW USER", error.response.data.message);
+      console.error(
+        "FAILED TO CREATED NEW USER",
+        error.responsew?.data.message,
+      );
       toast.error("Failed to create error");
       set({ isSigningUp: false });
       return set({ authUser: null });

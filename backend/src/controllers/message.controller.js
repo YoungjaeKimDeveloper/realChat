@@ -41,7 +41,7 @@ export const getMessages = async (req, res) => {
 export const sendMessage = async (req, res) => {
   try {
     const { text, image } = req.body;
-    const { id: receivedrID } = req.params;
+    const { id: receiverID } = req.params;
 
     const senderID = req.user._id;
 
@@ -53,7 +53,7 @@ export const sendMessage = async (req, res) => {
     }
     const newMessage = new Message({
       senderID: senderID,
-      receivedrID: receivedrID,
+      receiverID: receiverID,
       text: text,
       image: imageUrl,
     });
@@ -61,7 +61,7 @@ export const sendMessage = async (req, res) => {
     return res.status(201).json(newMessage);
     // TODO: realtime functionality goes here => socket.io
   } catch (error) {
-    console.error("Error in Sending Message", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    console.error("Error in Sending Message:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -12,7 +12,7 @@ const MessageInput = () => {
   const handleImageChange = (e) => {
     // 항상 첫번째 파일로 받아주기
     const file = e.target.files[0];
-    if (!file.type.startWith("image/")) {
+    if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
     }
@@ -24,30 +24,36 @@ const MessageInput = () => {
     reader.readAsDataURL(file);
   };
 
-  const removeImage = async () => {
+  const removeImage = () => {
     setImagePreview(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
-    }
-    try {
-      await sendMessage({
-        text: text.trim(),
-        image: imagePreview,
-      });
-      //   Clear Form
-      setText("");
-      setImagePreview(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    } catch (error) {
-      console.error("Failed to send message", error);
     }
   };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!text.trim() && !imagePreview) return;
+
+    try {
+      await sendMessage({
+        text: text.trim(),
+        image: imagePreview,
+      });
+
+      //   Clear Form
+      setText("");
+      setImagePreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      console.log(
+        "Message from handleSendMessage function in Message input",
+        text,
+      );
+    } catch (error) {
+      console.error("Failed to send message", error);
+    }
   };
   return (
     <div className="w-full p-4">
@@ -106,4 +112,3 @@ const MessageInput = () => {
 };
 
 export default MessageInput;
-3;
