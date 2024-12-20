@@ -6,8 +6,10 @@ import connectDB from "./lib/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
+import { app, server } from "./lib/socket.js";
+
 dotenv.config();
-const app = express();
+
 const PORT = process.env.PORT;
 app.use(express.json());
 app.use(cookieParser());
@@ -24,7 +26,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/message", messagesRoutes);
 // 쿠키파싱해주기
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   connectDB();
   console.log(`SERVER IS RUNNING IN ${PORT}`);
 });

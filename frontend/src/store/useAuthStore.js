@@ -1,9 +1,12 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
+import { io } from "socket.io-client";
 
-export const useAuthStore = create((set) => ({
-  // State
+const BASE_URL = "http://localhost:5011";
+
+export const useAuthStore = create((set, get) => ({
+  // State(LoadingBar, state)
   authUser: null,
   isSigningUp: false,
   isLoggingIng: false,
@@ -11,11 +14,13 @@ export const useAuthStore = create((set) => ({
 
   isUpdatingProfile: false,
   onlineUsers: [],
+  socket: null,
   // Action
   checkAuth: async () => {
     try {
       const res = await axiosInstance.get("/auth/check");
       console.log(res.data);
+      get().connectSocket();
       set({ authUser: res.data });
     } catch (error) {
       console.error("ERROR in checkAuth: ", error.message);
@@ -28,10 +33,10 @@ export const useAuthStore = create((set) => ({
     set({ isSigningUp: true });
     try {
       const res = await axiosInstance.post("/auth/signup", data);
-
       if (res.status === 201) {
         toast.success("Account created successfully");
         console.info("USER CREATED");
+        get().connectSocket();
         set({ authUser: res.data.newUser });
       }
     } catch (error) {
@@ -53,6 +58,7 @@ export const useAuthStore = create((set) => ({
       set({ authUser: null });
       if (res.status === 200) {
         toast.success("LOGGED OUT SUCCESSFULLY");
+        get.disconnectSocket();
         console.info("USER LOGGED OUT");
       }
     } catch (error) {
@@ -66,6 +72,7 @@ export const useAuthStore = create((set) => ({
       const res = await axiosInstance.post("/auth/login", data);
       if (res.status === 200) {
         toast.success("Logged In Successfully");
+        get.connectSocket();
         set({ authUser: res.data.user });
       }
     } catch (error) {
@@ -91,4 +98,12 @@ export const useAuthStore = create((set) => ({
       set({ isUpdatingProfile: false });
     }
   },
+  connectSocket: () => {
+    // action내에서 state를 불러올때는 항상 get을 통해 가져와야한다.
+    const { authUser } = get();
+    if (authUser || get().socket?.connected) return;
+    const socekt = io(BASE_URL);
+    socekt.connect();
+  },
+  disconnectSocket: () => {},
 }));
